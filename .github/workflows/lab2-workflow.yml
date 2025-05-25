@@ -1,10 +1,35 @@
 name: Exploring Workflow Dispatch Trigger
+run-name: Deploy to ${{ inputs.custom-message }} by @${{ github.actor }}
 
 on:
+  push:
+    branches:
+    - main
+    - release/**
   workflow_dispatch:
-
+    inputs:
+      run-job:
+        type: boolean
+        required: false
+        description: Run Specific Job
+      custom-message:
+        type: string
+        required: true
+        description: Enter a custom message
+  
 jobs:
   job1:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Exploring Workflow Dispatch Trigger"
+  job2:
+    needs: job1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Printing Custom Message
+        run: echo ${{ inputs.custom-message }}
+      - name: Printing run-job boolean value
+        run: echo ${{ inputs.run-job }}
+      - name: Printing run-job boolean value  #added
+        if: ${{ inputs.run-job == true }} 
+        run: echo ${{ inputs.run-job }}  
